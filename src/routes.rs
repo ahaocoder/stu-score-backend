@@ -1,4 +1,3 @@
-use rocket::get;
 use rocket::serde::json::Json;
 use crate::db_conn::db_conn;
 use crate::models::{Posts, Res};
@@ -11,4 +10,11 @@ pub async fn get_post(id: i32) -> Json<Res<Posts>> {
         Ok(post) => { Json(Res { code: 200, msg: "Success".to_string(), data: Some(post) }) }
         Err(err) => { Json(Res { code: 400, msg: format!("Error fetching posts: {:?}", err), data: None }) }
     }
+}
+
+
+pub fn get_routes() -> Vec<rocket::Route> {
+    routes![
+        get_post,
+    ]
 }

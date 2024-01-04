@@ -7,10 +7,11 @@ mod post_lib;
 mod routes;
 mod config;
 
+use routes::get_routes;
 
 #[launch]
 async fn rocket() -> _ {
-    rocket::build().mount("/", routes![routes::get_post])
+    rocket::build().mount("/", get_routes())
 }
 
 
