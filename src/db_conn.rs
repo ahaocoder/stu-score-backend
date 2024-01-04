@@ -5,6 +5,5 @@ pub async fn db_conn() -> Result<sqlx::MySqlPool, sqlx::Error> {
         .max_connections(5)
         .connect("mysql://root:12345678@localhost/school")
         .await?;
-
     Ok(pool)
 }
