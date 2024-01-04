@@ -4,7 +4,7 @@ use crate::config::AppConfig;
 
 pub async fn db_conn() -> Result<sqlx::MySqlPool, sqlx::Error> {
     let config_ = Config::builder()
-        .add_source(File::with_name("config.toml"))
+        .add_source(File::with_name("src/public/config.toml"))
         .build()
         .expect("构建配置错误");
     let config: AppConfig = config_.try_deserialize().expect("反序列化配置文件错误");

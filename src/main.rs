@@ -11,7 +11,7 @@ use routes::get_routes;
 
 #[launch]
 async fn rocket() -> _ {
-    rocket::build().mount("/", get_routes())
+    rocket::build().mount("/api", get_routes())
 }
 
 
