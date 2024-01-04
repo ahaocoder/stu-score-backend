@@ -1,3 +1,4 @@
+use serde::Deserialize;
 use sqlx::FromRow;
 
 #[derive(Debug, FromRow)]
@@ -13,3 +14,9 @@ pub struct Posts {
 //     pub message: String,
 //     pub data: Option<T>,
 // }
+
+#[derive(Debug, Default, Deserialize)]
+pub struct AppConfig {
+    pub server_addr: String,
+    pub port: u16,
+}

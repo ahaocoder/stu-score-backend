@@ -1,0 +1,1 @@
+database_url = "mysql://root:12345678@localhost/school"
