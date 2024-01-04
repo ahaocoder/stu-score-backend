@@ -1,7 +1,7 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Serialize)]
 pub struct Posts {
     pub id: i64,
     pub title: String,
@@ -9,11 +9,12 @@ pub struct Posts {
     pub published: String,
 }
 
-// pub struct ResData<T>{
-//     pub code: i32,
-//     pub message: String,
-//     pub data: Option<T>,
-// }
+#[derive(Debug, Serialize)]
+pub struct Res<T> {
+    pub code: i32,
+    pub msg: String,
+    pub data: Option<T>,
+}
 
 #[derive(Debug, Default, Deserialize)]
 pub struct AppConfig {
