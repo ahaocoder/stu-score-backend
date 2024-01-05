@@ -3,10 +3,10 @@ use sqlx::FromRow;
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct User {
-    pub id: i32,
+    pub id: Option<i32>,
     pub username: String,
     pub password: String,
-    pub status: i8,
+    pub status: Option<i8>,
 }
 
 #[derive(Debug, FromRow, Serialize, FromForm)]
