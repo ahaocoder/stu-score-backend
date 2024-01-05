@@ -58,6 +58,15 @@ pub async fn delete_stu_by_id(id: i32) -> Json<Res<String>> {
     }
 }
 
+#[catch(422)]
+pub fn unprocessable_entity() -> Json<Res<String>> {
+    Json(Res {
+        code: 422,
+        msg: "Unprocessable Entity: Invalid request data".to_string(),
+        data: None,
+    })
+}
+
 pub fn get_routes() -> Vec<rocket::Route> {
     routes![
         get_root,
