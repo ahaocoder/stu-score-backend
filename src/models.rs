@@ -3,21 +3,21 @@ use sqlx::FromRow;
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct User {
-    pub id: i64,
+    pub id: i32,
     pub username: String,
     pub password: String,
     pub status: i8,
 }
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Debug, FromRow, Serialize, FromForm)]
 pub struct ClassScore {
-    pub id: i64,
+    pub id: Option<i32>,
     pub stu_num: i32,
     pub name: String,
-    pub math: f64,
-    pub english: f64,
-    pub chinese: f64,
-    pub frontend: f64,
+    pub math: f32,
+    pub english: f32,
+    pub chinese: f32,
+    pub frontend: f32,
 }
 
 #[derive(Debug, Serialize)]
