@@ -1,6 +1,6 @@
 use rocket::serde::json::Json;
 use crate::db_conn::db_conn;
-use crate::models::{ClassScore, Res};
+use crate::models::{ClassScore, Res, User};
 use crate::post_lib::*;
 
 #[get("/")]
@@ -74,10 +74,27 @@ pub async fn get_score(stu_num: i32) -> Json<Res<ClassScore>> {
 }
 
 #[get("/login/<username>/<password>")]
-pub async fn login(username: i32, password: &str) -> Json<Res<Option<String>>> {
+pub async fn stu_login(username: i32, password: &str) -> Json<Res<Option<String>>> {
     let pool = db_conn().await.unwrap();
 
     match login_stu(&pool, username, password).await {
+        Ok(res) => {
+            Json(Res {
+                code: if res.is_some() { 200 } else { 401 },
+                msg: if res.is_some() { "Success".to_string() } else { "Username or password is incorrect".to_string() },
+                data: Option::from(res),
+            })
+        }
+        Err(err) => { Json(Res { code: 400, msg: format!("Error Login: {:?}", err), data: None }) }
+    }
+}
+
+#[post("/loginAdmin", data = "<form>")]
+pub async fn admin_login(form: rocket::form::Form<User>) -> Json<Res<Option<String>>> {
+    let pool = db_conn().await.unwrap();
+    let form_data = form.into_inner();
+
+    match login_admin(&pool, form_data).await {
         Ok(res) => {
             Json(Res {
                 code: if res.is_some() { 200 } else { 401 },
@@ -107,6 +124,15 @@ pub fn not_found() -> Json<Res<String>> {
     })
 }
 
+#[catch(415)]
+pub fn unsupported_media_type() -> Json<Res<String>> {
+    Json(Res {
+        code: 404,
+        msg: "415 Unsupported Media Type".to_string(),
+        data: None,
+    })
+}
+
 pub fn get_routes() -> Vec<rocket::Route> {
     routes![
         get_root,
@@ -115,6 +141,7 @@ pub fn get_routes() -> Vec<rocket::Route> {
         create_student,
         update_student,
         get_score,
-        login,
+        stu_login,
+        admin_login
     ]
 }

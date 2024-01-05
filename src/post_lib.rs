@@ -50,8 +50,25 @@ pub async fn update_stu(pool: &sqlx::MySqlPool, form_data: ClassScore) -> Result
     Ok(res.rows_affected() > 0)
 }
 
-// pub async fn login_admin()
-//
+pub async fn login_admin(pool: &sqlx::MySqlPool, user: User) -> Result<Option<String>, sqlx::Error> {
+    let admin_query = sqlx::query!(
+        "SELECT * FROM user WHERE username = ?",
+        user.username
+    )
+        .fetch_optional(pool)
+        .await?;
+
+    if let Some(admin) = admin_query {
+        // If the user exists, check if the provided password matches the stored one
+        if user.password == admin.password {
+            // If the password is correct, return a simple token
+            let token = "111222".to_string(); // You need to implement a proper token generation function
+            return Ok(Some(token));
+        }
+    }
+
+    Ok(None)
+}
 
 pub async fn login_stu(pool: &sqlx::MySqlPool, stu_num: i32, password: &str) -> Result<Option<String>, sqlx::Error> {
     let stu_query = sqlx::query!(

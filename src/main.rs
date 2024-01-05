@@ -14,7 +14,7 @@ use routes::get_routes;
 async fn rocket() -> _ {
     rocket::build()
         .mount("/api", get_routes())
-        .register("/", catchers![routes::unprocessable_entity, routes::not_found])
+        .register("/", catchers![routes::unprocessable_entity, routes::not_found, routes::unsupported_media_type])
 }
 
 
