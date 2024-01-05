@@ -1,5 +1,12 @@
 use sqlx::mysql::MySqlQueryResult;
 use crate::models::*;
+use jsonwebtoken::{encode, Header, EncodingKey};
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+struct Claims {
+    sub: String,
+    // 你可以根据需要添加更多的声明
+}
 
 pub async fn get_all_scores(pool: &sqlx::MySqlPool) -> Result<Vec<ClassScore>, sqlx::Error> {
     let scores = sqlx::query_as!(ClassScore, "SELECT * FROM class_score")
@@ -61,9 +68,23 @@ pub async fn login_admin(pool: &sqlx::MySqlPool, user: User) -> Result<Option<St
     if let Some(admin) = admin_query {
         // If the user exists, check if the provided password matches the stored one
         if user.password == admin.password {
-            // If the password is correct, return a simple token
-            let token = "111222".to_string(); // You need to implement a proper token generation function
-            return Ok(Some(token));
+            // 生成 JWT 令牌
+            let claims = Claims {
+                sub: user.username.to_string(),
+            };
+
+            let secret_key = "your_secret_key"; // 用于签名的秘钥，请替换成实际的秘钥
+            let token_result: Result<String, jsonwebtoken::errors::Error> = encode(
+                &Header::default(),
+                &claims,
+                &EncodingKey::from_secret(secret_key.as_ref()),
+            );
+
+            // 处理生成令牌的结果
+            match token_result {
+                Ok(token) => return Ok(Some(token)),
+                Err(_) => return Ok(None), // 生成令牌失败，返回 None 或其他适当的值
+            }
         }
     }
 
@@ -82,8 +103,23 @@ pub async fn login_stu(pool: &sqlx::MySqlPool, stu_num: i32, password: &str) -> 
         let the_password = "123456";
 
         if password == the_password {
-            let token = "111222".to_string(); // You need to implement this function
-            return Ok(Some(token));
+            // 生成 JWT 令牌
+            let claims = Claims {
+                sub: stu_num.to_string(),
+            };
+
+            let secret_key = "your_secret_key"; // 用于签名的秘钥，请替换成实际的秘钥
+            let token_result: Result<String, jsonwebtoken::errors::Error> = encode(
+                &Header::default(),
+                &claims,
+                &EncodingKey::from_secret(secret_key.as_ref()),
+            );
+
+            // 处理生成令牌的结果
+            match token_result {
+                Ok(token) => return Ok(Some(token)),
+                Err(_) => return Ok(None), // 生成令牌失败，返回 None 或其他适当的值
+            }
         }
     }
 
