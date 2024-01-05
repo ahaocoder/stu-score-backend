@@ -31,10 +31,10 @@ pub async fn create_student(form: rocket::form::Form<ClassScore>) -> Json<Res<St
     }
 }
 
-#[delete("/deleteStu/<id>")]
-pub async fn delete_stu_by_id(id: i32) -> Json<Res<String>> {
+#[delete("/deleteStu/<stu_num>")]
+pub async fn delete_stu_by_id(stu_num: i32) -> Json<Res<String>> {
     let pool = db_conn().await.unwrap();
-    match delete_stu(&pool, id).await {
+    match delete_stu(&pool, stu_num).await {
         Ok(..) => {
             let res_str = "Successfully deleted student.".to_string();
             Json(Res { code: 200, msg: res_str, data: None })

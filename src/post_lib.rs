@@ -32,8 +32,8 @@ pub async fn create_stu(pool: &sqlx::MySqlPool, form_data: ClassScore) -> Result
     Ok(res.rows_affected() > 0)
 }
 
-pub async fn delete_stu(pool: &sqlx::MySqlPool, id: i32) -> Result<MySqlQueryResult, sqlx::Error> {
-    let res = sqlx::query!("DELETE FROM class_score WHERE id = ?", id)
+pub async fn delete_stu(pool: &sqlx::MySqlPool, stu_num: i32) -> Result<MySqlQueryResult, sqlx::Error> {
+    let res = sqlx::query!("DELETE FROM class_score WHERE stu_num = ?", stu_num)
         .execute(pool)
         .await?;
 
