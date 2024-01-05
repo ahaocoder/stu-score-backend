@@ -52,7 +52,26 @@ pub async fn update_stu(pool: &sqlx::MySqlPool, form_data: ClassScore) -> Result
 
 // pub async fn login_admin()
 //
-// pub async fn login_stu()
+
+pub async fn login_stu(pool: &sqlx::MySqlPool, stu_num: i32, password: &str) -> Result<Option<String>, sqlx::Error> {
+    let stu_query = sqlx::query!(
+        "SELECT COUNT(*) as count FROM class_score WHERE stu_num = ?",
+        stu_num,
+    )
+        .fetch_one(pool)
+        .await?;
+
+    if stu_query.count > 0 {
+        let the_password = "123456";
+
+        if password == the_password {
+            let token = "111222".to_string(); // You need to implement this function
+            return Ok(Some(token));
+        }
+    }
+
+    Ok(None)
+}
 
 pub async fn get_this_score(pool: &sqlx::MySqlPool, stu_num: i32) -> Result<ClassScore, sqlx::Error> {
     let res = sqlx::query_as!(ClassScore, "SELECT * FROM class_score where stu_num = ?", stu_num)

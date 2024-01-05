@@ -73,11 +73,36 @@ pub async fn get_score(stu_num: i32) -> Json<Res<ClassScore>> {
     }
 }
 
+#[get("/login/<username>/<password>")]
+pub async fn login(username: i32, password: &str) -> Json<Res<Option<String>>> {
+    let pool = db_conn().await.unwrap();
+
+    match login_stu(&pool, username, password).await {
+        Ok(res) => {
+            Json(Res {
+                code: if res.is_some() { 200 } else { 401 },
+                msg: if res.is_some() { "Success".to_string() } else { "Username or password is incorrect".to_string() },
+                data: Option::from(res),
+            })
+        }
+        Err(err) => { Json(Res { code: 400, msg: format!("Error Login: {:?}", err), data: None }) }
+    }
+}
+
 #[catch(422)]
 pub fn unprocessable_entity() -> Json<Res<String>> {
     Json(Res {
         code: 422,
         msg: "Unprocessable Entity: Invalid request data".to_string(),
+        data: None,
+    })
+}
+
+#[catch(404)]
+pub fn not_found() -> Json<Res<String>> {
+    Json(Res {
+        code: 404,
+        msg: "404 Not Found".to_string(),
         data: None,
     })
 }
@@ -90,5 +115,6 @@ pub fn get_routes() -> Vec<rocket::Route> {
         create_student,
         update_student,
         get_score,
+        login,
     ]
 }
